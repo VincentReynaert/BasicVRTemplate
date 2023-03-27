@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class WhiteboardMarker : MonoBehaviour
+public class WhiteboardTip : MonoBehaviour
 {
     [SerializeField] private Transform _tip;
     [SerializeField, Range(1, 10)] private int _penSize = 5;
@@ -26,20 +26,33 @@ public class WhiteboardMarker : MonoBehaviour
         switch (tipType)
         {
             case TipType.Sphere:
-                _tipLength = _tip.localScale.z/2;
+                _tipLength = _tip.localScale.z / 2;
                 break;
             case TipType.Cube:
-                _tipLength = _tip.localScale.z * Mathf.Sqrt(3)/2;
+                _tipLength = _tip.localScale.z * Mathf.Sqrt(3) / 2;
                 break;
             default:
                 _tipLength = 0.1f;
                 break;
         }
     }
-    private void Update()
+    private void OnCollisionEnter(Collision collision)
+    {
+
+    }
+    private void OnCollisionStay(Collision collision)
     {
         Draw();
+        collision.GetContact(0);
     }
+    private void OnCollisionExit(Collision collision)
+    {
+
+    }
+    //private void Update()
+    //{
+    //    Draw();
+    //}
 
     private void Draw()
     {
@@ -76,9 +89,4 @@ public class WhiteboardMarker : MonoBehaviour
         _whiteboard = null;
         _touchedLastFrame = false;
     }
-}
-
-public enum TipType
-{
-    Sphere, Cube
 }
