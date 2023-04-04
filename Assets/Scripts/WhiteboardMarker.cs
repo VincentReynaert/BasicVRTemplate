@@ -7,7 +7,7 @@ using UnityEngine;
 public class WhiteboardMarker : MonoBehaviour
 {
     [SerializeField] private Transform _tip;
-    [SerializeField, Range(1, 10)] private int _penSize = 5;
+    [SerializeField, Range(1, 6)] private int _penSize = 5;
     [SerializeField] private TipType tipType = TipType.Cube;
     private Renderer _renderer;
     private Color32[] _colors;
