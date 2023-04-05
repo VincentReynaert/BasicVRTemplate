@@ -54,10 +54,13 @@ public class WhiteboardMarker : MonoBehaviour
                     _whiteboard = _touch.transform.GetComponent<Whiteboard>();
                     _colors = _whiteboard._texture.GetPixels32();
                 }
+
                 _touchPos = new Vector2(_touch.textureCoord.x, _touch.textureCoord.y);
                 int x = (int)(_touchPos.x * _whiteboard._textureSize.x - (_penSize / 2));
                 int y = (int)(_touchPos.y * _whiteboard._textureSize.y - (_penSize / 2));
+
                 if (y < 0 || y > _whiteboard._textureSize.y || x < 0 || x > _whiteboard._textureSize.x) return;
+
                 if (_touchedLastFrame)
                 {
                     //Debug.Log("SET" + Time.frameCount);

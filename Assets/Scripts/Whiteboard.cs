@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 //public class Whiteboard : MonoBehaviour
@@ -18,10 +19,11 @@ using UnityEngine;
 //}
 public class Whiteboard : MonoBehaviour
 {
-    public Vector2Int _textureSize = new Vector2Int(512,512*16/9);
+    public Vector2Int _textureSize = new Vector2Int(512, 512 * 16 / 9);
     public Texture2D _texture;
     private Renderer _renderer;
-
+    public Color32 _color;
+    private Color32[] _colors;
     private void Start()
     {
         InitializeTexture();
@@ -32,7 +34,8 @@ public class Whiteboard : MonoBehaviour
         _texture = new Texture2D(_textureSize.x, _textureSize.y);
         _texture.filterMode = FilterMode.Trilinear;
         _texture.wrapMode = TextureWrapMode.Clamp;
-        _texture.SetPixels32(new Color32[_textureSize.x * _textureSize.y]);
+        _colors = Enumerable.Repeat((Color32)_color, _textureSize.x * _textureSize.y).ToArray();
+        _texture.SetPixels32(_colors);
         _texture.Apply();
 
         _renderer = GetComponent<Renderer>();
@@ -41,7 +44,7 @@ public class Whiteboard : MonoBehaviour
 
     public void Clear()
     {
-        _texture.SetPixels32(new Color32[_textureSize.x * _textureSize.y]);
+        _texture.SetPixels32(_colors);
         _texture.Apply();
     }
 
