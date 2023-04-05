@@ -40,10 +40,54 @@ public class WhiteboardMarker : MonoBehaviour
     }
     private void Update()
     {
-        Draw();
+        DrawRay();
     }
-
     private void Draw()
+    {
+        if (Physics.SphereCast(_tip.position, _tipLength / 2, transform.up, out _touch))
+        {
+            if (_touch.transform.CompareTag("Whiteboard"))
+            {
+                if (_whiteboard == null)
+                {
+                    _whiteboard = _touch.transform.GetComponent<Whiteboard>();
+                    _colors = _whiteboard._texture.GetPixels32();
+                }
+
+                _touchPos = new Vector2(_touch.textureCoord.x, _touch.textureCoord.y);
+                int x = (int)(_touchPos.x * _whiteboard._textureSize.x); //- (_penSize / 2));
+                int y = (int)(_touchPos.y * _whiteboard._textureSize.y); //- (_penSize / 2));
+
+                if (y < 0 || y > _whiteboard._textureSize.y || x < 0 || x > _whiteboard._textureSize.x) return;
+
+                if (_touchedLastFrame)
+                {
+                    //Debug.Log("SET" + Time.frameCount);
+                    _colors[y * _whiteboard._textureSize.x + x] = _color;
+                    //_whiteboard._texture.SetPixels32(x, y, _penSize, _penSize, _colors);
+                    for (float f = 0.01f; f < 1.00f; f += 0.01f)
+                    {
+                        int lerpX = (int)Mathf.Lerp(_lastTouchPos.x, x, f);
+                        int lerpY = (int)Mathf.Lerp(_lastTouchPos.y, y, f);
+                        _colors[lerpY * _whiteboard._textureSize.x + lerpX] = _color;
+                        //_whiteboard._texture.SetPixels(lerpX, lerpY, _penSize, _penSize, _colors);
+
+                        //_colors[lerpX * SIZE + lerpY] = f;
+                    }
+                    _whiteboard._texture.SetPixels32(_colors);
+                    //transform.rotation = _lastTouchRot;
+                    _whiteboard._texture.Apply();
+                }
+                _lastTouchPos = new Vector2(x, y);
+                //_lastTouchRot = transform.rotation;
+                _touchedLastFrame = true;
+                return;
+            }
+        }
+        _whiteboard = null;
+        _touchedLastFrame = false;
+    }
+    private void DrawRay()
     {
         if (Physics.Raycast(_tip.position, transform.up, out _touch, _tipLength))
         {
@@ -56,8 +100,8 @@ public class WhiteboardMarker : MonoBehaviour
                 }
 
                 _touchPos = new Vector2(_touch.textureCoord.x, _touch.textureCoord.y);
-                int x = (int)(_touchPos.x * _whiteboard._textureSize.x - (_penSize / 2));
-                int y = (int)(_touchPos.y * _whiteboard._textureSize.y - (_penSize / 2));
+                int x = (int)(_touchPos.x * _whiteboard._textureSize.x); //- (_penSize / 2));
+                int y = (int)(_touchPos.y * _whiteboard._textureSize.y); //- (_penSize / 2));
 
                 if (y < 0 || y > _whiteboard._textureSize.y || x < 0 || x > _whiteboard._textureSize.x) return;
 

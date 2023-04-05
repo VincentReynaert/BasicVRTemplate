@@ -14,7 +14,8 @@ public class WhiteboardTip : MonoBehaviour
     private Color32 _color;
     private Whiteboard _whiteboard;
     private Vector2Int _textureSize;
-    private Vector2 _touchPos;
+    private Vector3 _touchPos;
+    private bool _canDraw;
     private bool _touchedLastFrame;
     private Vector2 _lastTouchPos;
     private Quaternion _lastTouchRot;
@@ -34,12 +35,13 @@ public class WhiteboardTip : MonoBehaviour
             _whiteboard = collision.transform.GetComponent<Whiteboard>();
             _colors = _whiteboard._texture.GetPixels32();
             _textureSize = _whiteboard._textureSize;
+            _canDraw = true;
         }
     }
     private void OnCollisionStay(Collision collision)
     {
         if (!collision.collider.CompareTag("Whiteboard")) return;
-        if (_whiteboard != null) Draw(collision);
+        if (_whiteboard != null) SetTouchedPosition(collision);
 
     }
     private void OnCollisionExit(Collision collision)
@@ -48,23 +50,40 @@ public class WhiteboardTip : MonoBehaviour
         if (!collision.collider.CompareTag("Whiteboard")) return;
         _whiteboard = null;
         _touchedLastFrame = false;
+        _canDraw = false;
     }
-
-    private void Draw(Collision collision)
+    private void SetTouchedPosition(Collision collision)
     {
-        print("Draw");
         ContactPoint contactPoint = collision.GetContact(0);
 
-        _touchPos = new Vector2(contactPoint.point.x, contactPoint.point.y);
-        int x = (int)(_touchPos.x * _whiteboard._textureSize.x - (_penSize / 2));
-        int y = (int)(_touchPos.y * _whiteboard._textureSize.y - (_penSize / 2));
+        _touchPos = -_whiteboard.transform.position + new Vector3(contactPoint.point.x, contactPoint.point.y, _whiteboard.transform.position.z);
+        //_touchPos = _whiteboard.transform.InverseTransformPoint(new Vector3(contactPoint.point.x, contactPoint.point.y, _whiteboard.transform.position.z));
 
-        if (y < 0 || y > _whiteboard._textureSize.y || x < 0 || x > _whiteboard._textureSize.x) return;
+    }
+    private void Update()
+    {
+        if (_canDraw) { Draw(); }
+    }
+    private void Draw()
+    {
+        //print("Draw" + Time.frameCount);
+        int x = (int)(_touchPos.x * _whiteboard._textureSize.x);
+        int y = (int)(_touchPos.y * _whiteboard._textureSize.y);
+        //print(x + " " + y);
+        //print(_whiteboard._textureSize.x + " " + _whiteboard._textureSize.y);
 
+        if (y < 0 || y > _whiteboard._textureSize.y || x < 0 || x > _whiteboard._textureSize.x)
+        {
+            print("x:" + _touchPos.x + " y:" + _touchPos.y);
+            print("isout");
+            return;
+        }
+        //print(_touchedLastFrame);
         if (_touchedLastFrame)
         {
             //Debug.Log("SET" + Time.frameCount);
             _colors[y * _whiteboard._textureSize.x + x] = _color;
+            //print(_color);
             //_whiteboard._texture.SetPixels32(x, y, _penSize, _penSize, _colors);
             for (float f = 0.01f; f < 1.00f; f += 0.01f)
             {

@@ -135,7 +135,6 @@ GameObject:
   - component: {fileID: 406000664}
   - component: {fileID: 406000663}
   - component: {fileID: 406000662}
-  - component: {fileID: 406000665}
   m_Layer: 0
   m_Name: spherikTip
   m_TagString: Untagged
@@ -221,20 +220,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 406000660}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
---- !u!114 &406000665
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 406000660}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9116554ef0929dc40939a8dc8b10453b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _tip: {fileID: 0}
-  _penSize: 5
 --- !u!1 &657720661
 GameObject:
   m_ObjectHideFlags: 0
@@ -4907,7 +4892,7 @@ MeshCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
-  m_Convex: 1
+  m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!23 &1687805978
@@ -4991,7 +4976,7 @@ MonoBehaviour:
   _texture: {fileID: 0}
   _color:
     serializedVersion: 2
-    rgba: 3221225471
+    rgba: 3206948390
 --- !u!54 &1687805982
 Rigidbody:
   m_ObjectHideFlags: 0
