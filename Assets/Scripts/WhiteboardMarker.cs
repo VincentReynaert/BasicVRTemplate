@@ -7,7 +7,7 @@ using UnityEngine;
 public class WhiteboardMarker : MonoBehaviour
 {
     [SerializeField] private Transform _tip;
-    [SerializeField, Range(1, 6)] private int _penSize = 5;
+    [SerializeField, Range(1, 16)] private int _penSize = 5;
     [SerializeField] private TipType tipType = TipType.Cube;
     private Renderer _renderer;
     private Color32[] _colors;
@@ -107,24 +107,20 @@ public class WhiteboardMarker : MonoBehaviour
 
                 if (_touchedLastFrame)
                 {
-                    //Debug.Log("SET" + Time.frameCount);
-                    _colors[y * _whiteboard._textureSize.x + x] = _color;
-                    //_whiteboard._texture.SetPixels32(x, y, _penSize, _penSize, _colors);
+                    //_colors[y * _whiteboard._textureSize.x + x] = _color;
+                    MarkPixelsToColour(new Vector2(x, y), _penSize, _color);
                     for (float f = 0.01f; f < 1.00f; f += 0.01f)
                     {
                         int lerpX = (int)Mathf.Lerp(_lastTouchPos.x, x, f);
                         int lerpY = (int)Mathf.Lerp(_lastTouchPos.y, y, f);
-                        _colors[lerpY * _whiteboard._textureSize.x + lerpX] = _color;
-                        //_whiteboard._texture.SetPixels(lerpX, lerpY, _penSize, _penSize, _colors);
+                        //_colors[lerpY * _whiteboard._textureSize.x + lerpX] = _color;
+                        MarkPixelsToColour(new Vector2(lerpX, lerpY), _penSize, _color);
 
-                        //_colors[lerpX * SIZE + lerpY] = f;
                     }
                     _whiteboard._texture.SetPixels32(_colors);
-                    //transform.rotation = _lastTouchRot;
                     _whiteboard._texture.Apply();
                 }
                 _lastTouchPos = new Vector2(x, y);
-                //_lastTouchRot = transform.rotation;
                 _touchedLastFrame = true;
                 return;
             }
@@ -132,6 +128,38 @@ public class WhiteboardMarker : MonoBehaviour
         _whiteboard = null;
         _touchedLastFrame = false;
     }
+
+    public void MarkPixelsToColour(Vector2 center_pixel, int pen_thickness, Color color_of_pen)
+    {
+        // Figure out how many pixels we need to colour in each direction (x and y)
+        int center_x = (int)center_pixel.x;
+        int center_y = (int)center_pixel.y;
+        //int extra_radius = Mathf.Min(0, pen_thickness - 2);
+
+        for (int x = center_x - pen_thickness; x <= center_x + pen_thickness; x++)
+        {
+            // Check if the X wraps around the image, so we don't draw pixels on the other side of the image
+            if (x >= (int)_whiteboard._textureSize.x || x < 0)
+                continue;
+
+            for (int y = center_y - pen_thickness; y <= center_y + pen_thickness; y++)
+            {
+                MarkPixelToChange(x, y, color_of_pen);
+            }
+        }
+    }
+    public void MarkPixelToChange(int x, int y, Color color)
+    {
+        // Need to transform x and y coordinates to flat coordinates of array
+        int array_pos = y * (int)_whiteboard._textureSize.x + x;
+
+        // Check if this is a valid position
+        if (array_pos > _colors.Length || array_pos < 0)
+            return;
+
+        _colors[array_pos] = color;
+    }
+
 }
 
 public enum TipType

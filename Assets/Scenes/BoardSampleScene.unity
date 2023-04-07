@@ -349,7 +349,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _tip: {fileID: 2021985562}
-  _penSize: 5
+  _penSize: 13
   tipType: 1
 --- !u!4 &668433141
 Transform:
@@ -5312,11 +5312,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1858421084}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9116554ef0929dc40939a8dc8b10453b, type: 3}
+  m_Script: {fileID: 11500000, guid: 516d0ff5608335d4ca5d9500c7fe8f25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _tip: {fileID: 406000661}
-  _penSize: 5
+  _penSize: 10
+  tipType: 1
 --- !u!43 &1890129779
 Mesh:
   m_ObjectHideFlags: 0
