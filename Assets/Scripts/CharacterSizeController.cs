@@ -18,7 +18,7 @@ public class CharacterSizeController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        character.center = new Vector3(0, origin.CameraInOriginSpaceHeight / 2, 0);
+        character.center = new Vector3(Camera.main.transform.localPosition.x, origin.CameraInOriginSpaceHeight / 2, Camera.main.transform.localPosition.z);
         character.height = origin.CameraInOriginSpaceHeight;
     }
 }
